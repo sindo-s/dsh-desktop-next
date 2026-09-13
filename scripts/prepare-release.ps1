@@ -16,7 +16,7 @@ try {
     }
     $links = @(git ls-tree -r HEAD | Where-Object { $_ -match '^(120000|160000) ' })
     if ($links.Count) { throw 'Symlinks and submodules require separate review' }
-    $suspects = @(git grep -I -l -E 'gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{20,}|BEGIN .*PRIVATE KEY' HEAD)
+    $suspects = @(git grep -I -l -E 'gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{20,}|[-]{5}BEGIN [A-Z ]*PRIVATE KEY[-]{5}' HEAD)
     if ($LASTEXITCODE -gt 1) { throw 'Credential scan failed' }
     if ($suspects.Count) { throw 'Possible credential found in committed source. Review locally; export refused.' }
     New-Item -ItemType Directory -Path $target | Out-Null
