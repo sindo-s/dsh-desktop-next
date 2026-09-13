@@ -1,0 +1,9 @@
+{
+  "bundle": {
+    "resources": {
+      "../LICENSE": "licenses/LICENSE",
+      "../docs/generated/THIRD-PARTY-NOTICES.txt": "licenses/THIRD-PARTY-NOTICES.txt",
+      "../docs/generated/MPL-SOURCES.json": "licenses/MPL-SOURCES.json"
+    }
+  }
+}

@@ -5,7 +5,10 @@
 **把 DeepSeek Harness 带到 Windows 桌面：一个窗口管理聊天、Linux 环境、内核更新与插件。**
 
 这是个人维护的非官方客户端，与 DeepSeek 官方无隶属或背书关系。DeepSeek、WSL 等名称及相关商标归各自权利人所有。
-当前版本为 **0.4.0-alpha.4**，适合试用与反馈，不应作为重要数据的唯一保存位置。
+当前版本为 **0.4.0-alpha.5**，适合试用与反馈，不应作为重要数据的唯一保存位置。
+
+[下载在线手动安装测试版](https://github.com/sindo-s/dsh-desktop-next/releases/tag/v0.4.0-alpha.5) · [安装注意事项](docs/release-alpha5.md)
+本次不发布离线包，也不开启自动更新。旧版用户请先阅读安装注意事项，不是无缝覆盖升级。
 
 ## 为什么做这个应用
 
