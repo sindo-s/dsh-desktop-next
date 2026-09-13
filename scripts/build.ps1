@@ -7,6 +7,6 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'npm ci failed' }
     & npm.cmd test
     if ($LASTEXITCODE -ne 0) { throw 'Tests failed' }
-    if ($DebugBuild) { & npm.cmd run tauri -- build --debug } else { & npm.cmd run dist }
+    if ($DebugBuild) { & npm.cmd run tauri -- build --debug --config src-tauri/tauri.dev.json } else { & npm.cmd run dist }
     if ($LASTEXITCODE -ne 0) { throw 'Desktop build failed' }
 } finally { Pop-Location }

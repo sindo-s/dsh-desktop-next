@@ -12,6 +12,7 @@ pub fn endpoint(repo:&str)->Result<tauri::Url,String>{
 #[tauri::command]
 pub async fn desktop_update(window:tauri::Webview,app:tauri::AppHandle,host:tauri::State<'_,Host>,pending:tauri::State<'_,Pending>,action:String,repo:String)->Result<Value,String>{
     authorize(&window)?;
+    if cfg!(debug_assertions) { return Err("开发环境不安装正式桌面更新，请从源码重新构建".into()); }
     if host.busy.swap(true,std::sync::atomic::Ordering::SeqCst){return Err("已有操作正在进行".into());}
     let result=async {
         if action=="check" {

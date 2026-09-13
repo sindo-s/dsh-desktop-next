@@ -76,6 +76,8 @@
 
 ## 开发
 
+日常使用与制作环境的分工、独立调试版及发布源码导出方法见 [环境隔离说明](docs/environment-separation.md)。
+
 需要 Node.js、Rust MSVC、Microsoft C++ Build Tools 与 WebView2。开发依赖不是终端用户依赖。
 
 ```powershell

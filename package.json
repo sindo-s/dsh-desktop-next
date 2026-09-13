@@ -9,7 +9,7 @@
     "build": "vite build",
     "test": "node --test tests/*.test.mjs",
     "tauri": "tauri",
-    "desktop": "tauri dev",
+    "desktop": "tauri dev --config src-tauri/tauri.dev.json",
     "dist": "tauri build"
   },
   "devDependencies": {

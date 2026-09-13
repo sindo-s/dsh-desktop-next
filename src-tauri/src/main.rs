@@ -8,7 +8,10 @@ mod offline;
 #[cfg(windows)]
 use std::os::windows::process::CommandExt;
 
+#[cfg(not(debug_assertions))]
 const DISTRO: &str = "DSH-Desktop-Next";
+#[cfg(debug_assertions)]
+const DISTRO: &str = "DSH-Desktop-Next-Dev";
 const LINUX: &str = include_str!("../../runtime/manager.mjs");
 const BOOT: &str = include_str!("../../runtime/bootstrap.sh");
 #[derive(Clone)]
@@ -82,6 +85,8 @@ fn validate_root(root: &str) -> Result<(), String> {
     Ok(())
 }
 fn resume_registration(enable:bool)->Result<(),String>{
+    // Development setup must never overwrite the daily application's resume entry.
+    if cfg!(debug_assertions) { return Ok(()); }
     let mut c=cmd("reg.exe");let key="HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\RunOnce";
     if enable{
         let exe=std::env::current_exe().map_err(|e|e.to_string())?;
@@ -90,6 +95,7 @@ fn resume_registration(enable:bool)->Result<(),String>{
     let result=c.output().map_err(|e|e.to_string())?;if enable&&!result.status.success(){return Err("无法注册重启后续装".into());}Ok(())
 }
 fn setup(root: &str, app: &tauri::AppHandle, host: &Host) -> Result<Value, String> {
+    let root = if cfg!(debug_assertions) { "D:\\DSH-Next-Dev" } else { root };
     validate_root(root)?;
     let record = host.state_dir.join("installation.json");
     let existing = registered().unwrap_or(false);
@@ -145,6 +151,7 @@ async fn choose_directory(window:tauri::Webview,app:tauri::AppHandle)->Result<Op
 async fn run_action(window: tauri::Webview, app: tauri::AppHandle, host: tauri::State<'_, Host>, action: String, value: Option<String>) -> Result<Value, String> {
     authorize(&window)?;
     if !["inspect","enable-wsl","setup","status","check","install","start","stop","rollback","plugin-list","plugin-add","plugin-remove","legacy-inspect","legacy-import","storage","cleanup"].contains(&action.as_str()) { return Err("Unknown action".into()); }
+    if cfg!(debug_assertions) && action.starts_with("legacy-") { return Err("开发环境禁止读取或导入日常会话，请使用虚构测试数据".into()); }
     if host.busy.swap(true, Ordering::SeqCst) { return Err("已有操作正在进行".into()); }
     let host = host.inner().clone();
     tauri::async_runtime::spawn_blocking(move || {
@@ -218,7 +225,10 @@ fn main() {
         .plugin(tauri_plugin_single_instance::init(|app, _, _| { if let Some(w) = app.get_window("main") { let _ = w.show();let _ = w.set_focus(); } }))
         .on_window_event(|window,event|{if matches!(event,tauri::WindowEvent::Resized(_)|tauri::WindowEvent::ScaleFactorChanged{..}){let _=fit_core(window.app_handle());}})
         .setup(|app| {
-            let state_dir = app.path().app_data_dir()?; fs::create_dir_all(&state_dir)?;
+            let state_dir = app.path().app_data_dir()?;
+            let state_dir = if cfg!(debug_assertions) { state_dir.join("development") } else { state_dir };
+            fs::create_dir_all(&state_dir)?;
+            if cfg!(debug_assertions) { if let Some(w)=app.get_window("main") { w.set_title("DSH Desktop Next — 开发测试版（非日常版）")?; } }
             let mut job: Value = fs::read(state_dir.join("job.json")).ok().and_then(|s| serde_json::from_slice(&s).ok()).unwrap_or(json!({"status":"idle","message":"准备就绪"}));
             if job["status"] == "running" { job = json!({"status":"interrupted","message":"上次任务中断。请刷新状态后继续；不会自动覆盖现有内核。"}); }
             if job["status"]=="installing" {job=if job["targetVersion"].as_str()==Some(app.package_info().version.to_string().as_str()){json!({"status":"succeeded","message":"桌面更新完成，已运行目标版本"})}else{json!({"status":"interrupted","message":"上次桌面更新未切换到目标版本，请重新检查更新"})};}
