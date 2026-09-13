@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-hide-core"
+description = "Enables the hide_core command without any pre-configured scope."
+commands.allow = ["hide_core"]
+
+[[permission]]
+identifier = "deny-hide-core"
+description = "Denies the hide_core command without any pre-configured scope."
+commands.deny = ["hide_core"]

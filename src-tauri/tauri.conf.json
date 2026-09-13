@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "DSH Desktop Next",
+  "version": "0.4.0-alpha.4",
+  "identifier": "io.github.dshdesktop.next",
+  "plugins":{"updater":{"pubkey":"dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEI4MkFBMURDM0M0QkQ3NzMKUldSejEwczgzS0VxdUhJR1FyZ2VSdlZrMmRCa0VOUW1PWVRlb3ZubU1MYlN1a3VTYTNzd1Y2TjQK","endpoints":[]}},
+  "build": { "beforeDevCommand": "npm run dev", "devUrl": "http://localhost:1420", "beforeBuildCommand": "npm run build", "frontendDist": "../dist" },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [{ "label": "main", "title": "DSH Desktop Next", "width": 1120, "height": 780, "minWidth": 760, "minHeight": 580 }],
+    "security": { "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src ipc: http://ipc.localhost; img-src 'self' data:; object-src 'none'; frame-src 'none'" }
+  },
+  "bundle": { "active": true, "createUpdaterArtifacts":true, "targets": ["nsis"], "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.ico"], "windows": { "nsis": { "displayLanguageSelector": false, "languages": ["SimpChinese", "English"] }, "webviewInstallMode": { "type": "downloadBootstrapper", "silent": true } } }
+}

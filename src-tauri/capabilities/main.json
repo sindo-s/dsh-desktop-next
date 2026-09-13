@@ -1,0 +1,6 @@
+{
+  "identifier": "main",
+  "description": "Only bundled management UI may control the host. Core web UI has no native privileges.",
+  "webviews": ["main"],
+  "permissions": ["core:default", "allow-run-action", "allow-get-job", "allow-open-core", "allow-hide-core","allow-choose-directory","allow-desktop-update"]
+}
